@@ -10,17 +10,30 @@ format:
         \setlength{\parindent}{1.35cm}
 editor: visual
 echo: FALSE
+knitr:
+  opts_chunk:
+    fig.width: 6
+    fig.height: 2.8
+    out.width: "80%"
+    fig.align: center
 ---
 
 ```{r}
 #| message: false
 #| warning: false
+#| fig-width: 6
+#| fig-height: 3
+#| out-width: "75%"
+#| fig-align: center
 
-library(tidyverse)
+library(dplyr)
+library(readr)
+library(tidyr)
+library(ggplot2)
+library(knitr)
 library(primes)
 library(pracma)
 ```
-
 
 Proyecto individual - Herramientas de ciencia de datos I
 
@@ -34,9 +47,9 @@ Los números primos tienen un comportamiento caótico en su distribución. Su co
 
 $$\lim_{n\to \infty} \frac{\pi(n)}{n/\log(n)} = 1$$
 
-Sin embargo, esto no quiere decir que $n/\log(n)$ explique la función $\pi$, sino que la razón de ambas funciones tiene a $1$, o equivalentemente, que el error relativo con el que $n/\log(n)$ aproxima a $\pi$ tiende a $0$. Por tanto, este proyecto busca analizar los datos correspondientes al error, tanto absoluto como relativo, que presentan diferentes aproximaciones de la función $\pi$, con el fin de determinar que tan buena aproximación es $n/\log(n)$ y compararla con $\text{Li}(n) := \int_0^n\frac{dt}{\log(t)}$, otra aproximación asintótica bien conocida de $\pi$, particularmente, para conjuntos finitos de enteros, como los enteros del $1$ al $1000000$.
+Sin embargo, esto no quiere decir que $n/\log(n)$ explique la función $\pi$, sino que la razón de ambas funciones tiene a $1$, o equivalentemente, que el error relativo con el que $n/\log(n)$ aproxima a $\pi$ tiende a $0$. Por tanto, este proyecto busca analizar los datos correspondientes al error, tanto absoluto como relativo, que presentan diferentes aproximaciones de la función $\pi$, con el fin de determinar que tan buena aproximación es $n/\log(n)$ y compararla con la integral logaritmica $\text{Li}(n) := \int_0^n\frac{dt}{\log(t)}$, otra aproximación asintótica bien conocida de $\pi$, particularmente, para conjuntos finitos de enteros, como los enteros del $1$ al $1000000$.
 
-Lo expuesto anteriormente permitirá verificar empíricamente la hipótesis del teorema de los números primos, al igual que determinar qué tan bien podemos aproximar la función $\pi$, con base en la información generada. Esto puede tener importancia para la teoría de números y para áreas relacionadas, ya que si bien no estudiamos a los números primos directamente, $\pi(n)$ incrementa su valor en $1$ de $\pi(n-1)$ si y solo si $n$ es primo. Es decir, $\pi$ representa un criterio de primalidad, algo poco común y valioso para los matemáticos. A su vez, ciertas hipótesis sobre el crecimiento asintótico de $\text{Li}(n)-\pi(n)$ son equivalentes a la hipótesis de Riemann, uno de los Problemas del Milenio del Clay Mathematics Institute, así justificando el estudio de estos errores.
+Lo expuesto anteriormente permitirá verificar empíricamente la hipótesis del teorema de los números primos, al igual que determinar qué tan bien podemos aproximar la función $\pi$, con base en la información generada. Esto puede tener importancia para la teoría de números y para áreas relacionadas, ya que si bien no estudiamos a los números primos directamente, $\pi(n)$ incrementa su valor en $1$ de $\pi(n-1)$ si y solo si $n$ es primo. Es decir, $\pi$ representa un criterio de primalidad, algo poco común y valioso para los matemáticos. A su vez, ciertas hipótesis sobre que $\text{Li}(n)-\pi(n) = O(\sqrt{x}\log(x))$ son equivalentes a la hipótesis de Riemann, uno de los Problemas del Milenio del Clay Mathematics Institute, así justificando el estudio de estos errores.
 
 ## 2. Objetivo
 
@@ -54,21 +67,193 @@ La aproximación de $n/\log(n)$ se puede programar directo en R, por lo cual sim
 
 ### 3.3. Análisis de datos
 
-Para evaluar la precisión de las aproximaciones, se calculan los errores con signo, absolutos y relativos respecto a $\pi(n)$. Se emplean técnicas de estadística descriptiva, incluyendo medidas de tendencia central, dispersión y posición, como la media, mediana, desviación estándar y cuartiles. Estas medidas permiten caracterizar la magnitud y variabilidad de los errores de cada aproximación. Adicionalmente, se utilizan herramientas de visualización de datos, principalmente gráficos de líneas, histogramas y diagramas de caja, con el objetivo de identificar patrones en la distribución de los errores y analizar su evolución conforme aumenta el valor de $n$.
+Para evaluar la precisión de las aproximaciones, se calculan los errores absolutos y relativos respecto a $\pi(n)$. Se emplean técnicas de estadística descriptiva, incluyendo medidas de tendencia central, como la media, mediana, desviación estándar y cuartiles. Estas medidas permiten caracterizar la magnitud y variabilidad de los errores de cada aproximación. Adicionalmente, se utilizan herramientas de visualización de datos, principalmente gráficos de líneas, con el objetivo de identificar patrones en la distribución de los errores y analizar su evolución conforme aumenta el valor de $n$.
 
-Finalmente, se realiza una comparación descriptiva de ambas aproximaciones para identificar cuál presenta menores errores dentro del intervalo estudiado. El análisis se limita a los valores seleccionados y no pretende establecer conclusiones generales sobre la precisión de estas funciones para todos los enteros positivos.
+A su vez, se realiza una comparación descriptiva de ambas aproximaciones para identificar cuál presenta menores errores dentro del intervalo estudiado. El análisis se limita a los valores seleccionados y no pretende establecer conclusiones generales sobre la precisión de estas funciones para todos los enteros positivos.
+
+Finalmente, se compara el crecimiento del error absoluto de $\text{Li}(n)$ con $\pi(x)$, con el fin de verificar la hipótesis de Riemann empíricamente mediante gráficos y estadísticas.
 
 ## 4. Resultados
 
 ### 4.1 Analisis exploratorio de datos
 
+El análisis exploratorio de datos se realizó sobre los datos de la imagen de la función $\pi$ en el dominio establecido. Se puede apreciar que hay un total de $999 999$ observaciones, todas siendo numéricas. La información descriptiva se aprecia a continuación.
+
 ```{r}
-funcion.pi <- read.csv("data/datosfuncionpi.csv")
+f.pi <- read.csv("data/datosfuncionpi.csv")
+
+datos <- f.pi |> 
+  mutate(
+    aprox.log = n/ log(n),
+    aprox.li = expint_Ei(log(n)),
+    
+    error.abs.log = abs(pi_n - aprox.log),
+    error.abs.li = abs(pi_n - aprox.li),
+    
+    error.rel.log = error.abs.log / pi_n,
+    error.rel.li = error.abs.li / pi_n,
+    
+    razon.log = aprox.log / pi_n,
+    razon.li = aprox.li / pi_n
+  )
+
+datos |>
+  summarise(
+    Media = mean(pi_n),
+    Mediana = median(pi_n),
+    Desviación = sd(pi_n),
+    Mínimo = min(pi_n),
+    Q1 = quantile(pi_n, 0.25),
+    Q3 = quantile(pi_n, 0.75),
+    Máximo = max(pi_n)
+  ) |>  kable(
+    digits = 4,
+    caption = "Estadísticas descriptivos de la funcion contadora de primos en el intervalo de 2 a 1000000"
+  )
 ```
+
+Se puede apreciar que la mediana es mayor a la media, por lo cual existe sesgo por la izquierda, es decir, existen menos valores por debajo de la media. Esto quiere decir que la función en general crece más lento que una función lineal. Es decir, su razón de cambio, si bien es positiva, es decreciente, ya que valores de $n$ más grandes no compensan por aquellos alcanzados por los $n$ más pequeños. La información sobre los cuartiles respalda esta observación. A su vez, se puede apreciar que la función es estrictamente creciente, por lo cual los valores extremos se alcanzan en los bordes del intervalo, con $\pi(2)=1$ y $\pi(1000000)=78498$, respectivamente.
 
 ### 4.2 Análisis de resultados
 
+Una vez analizados los valores que toma $\pi(n)$, consideramos tanto la aproximación por $n/\log(n)$, como por $\text{Li}(n)$. Gráficamente, se ven de la siguiente forma.
+
+```{r}
+ggplot(datos, aes(x = n)) +
+  geom_line(aes(y = pi_n, color = "π(n)"),
+            linewidth = 1.1) +
+  geom_line(aes(y = aprox.li, color = "Li(n)"),
+            linewidth = 0.9,
+            linetype = "dashed") +
+  geom_line(aes(y = aprox.log, color = "n/log(n)"),
+            linewidth = 0.9,
+            linetype = "dotted") +
+  scale_color_manual(
+    values = c(
+      "π(n)" = "black",
+      "Li(n)" = "red",
+      "n/log(n)" = "blue"
+    )
+  ) +
+  labs(
+    title = "Comparación de las aproximaciones de π(n)",
+    x = "n",
+    y = "Cantidad de números primos",
+    color = "Función"
+  ) +
+  theme_minimal()
+```
+
+Se aprecia que $\text{Li}(n)$ y $\pi(n)$ no se diferencian en el gráfico, mientras que $n/\log(n)$ tiene un error considerable. La cercania entre las curvas no se puede diferenciar para los valores seleccionados sin alterar el gráfico de modo que invisibilice a $n/\log(n)$. Por lo tanto, se decide mantener la cercania como una consecuencia matemática. Esto concuerda con el teorema de los números primos.
+
+Por otro lado, el error absoluto resultó en el siguiente gráfico
+
+```{r}
+#Grafico: error absoluto, comparación
+datos |>
+  select(n, error.abs.log, error.abs.li) |>
+  pivot_longer(
+    cols = -n,
+    names_to = "aproximacion",
+    values_to = "error"
+  ) |>
+  ggplot(aes(x = n, y = error, color = aproximacion)) +
+  geom_line() +
+  geom_hline(
+    yintercept = 0,
+    linetype = "dashed",
+    color = "purple"
+  ) +
+  labs(
+    title = "Errores absolutos de las aproximaciones",
+    x = "n",
+    y = "Error absoluto",
+    color = "Aproximación"
+  ) +
+  theme_minimal()
+
+#min(datos$error.abs.log[datos$n>=9431])
+#max(datos$error.abs.li)
+#max(datos$error.abs.log)
+
+#mean(datos$error.abs.log)
+#mean(datos$error.abs.li)
+
+#min(datos$error.abs.log)
+#min(datos$error.abs.li)
+
+#median(datos$error.abs.log)
+#median(datos$error.abs.li)
+```
+
+En concordancia con la gráfica pasada, se puede ver que el error de la aproximación con $\text{Li}(n)$ es insignificante comparado al de $n/\log(n)$. El error medio de $\text{Li}(n)$ es de $71.9618$, comparado al $3339.693$ de $n/\log(n)$. De hecho, el mínimo error de $n/\log(n)$ alcanzado para $n\ge9431$ es de $136.3902$, mayor al maximo error alcanzado por $\text{Li}(n)$, de $136.1256$. El máximo error de $n/\log(n)$ fue de $6119.95$. Ninguna aproximación logra acertar ningún valor, siendo el menor error de $n/\log(n)$ de $0.0961$, mientras que el de $\text{Li}(n)$ es de $0.0452$. Además, se puede apreciar sesgo hacia la izquierda nuevamente, donde la mediana es de $3435.795$ y de $75.25792$.
+
+También se presenta el error relativo de ambas aproximaciones.
+
+```{r}
+# Grafico: error relativo, comparación
+
+datos |>
+  select(n, error.rel.log, error.rel.li) |>
+  pivot_longer(
+    cols = -n,
+    names_to = "aproximacion",
+    values_to = "error"
+  ) |>
+  ggplot(aes(x = n, y = log(error,10),
+             color = aproximacion)) +
+  geom_line() +
+  labs(
+    title = "Errores relativos de las aproximaciones",
+    x = "n",
+    y = "Error relativo (escala logarítmica)",
+    color = "Aproximación"
+  ) +
+  theme_minimal()
+
+  #min(datos$error.rel.log)
+  #min(datos$error.rel.li)
+  
+  #mean(datos$error.rel.log)
+  #mean(datos$error.rel.li)
+
+  #median(datos$error.rel.log)
+  #median(datos$error.rel.li)
+
+  #sd(datos$error.rel.log)
+  #sd(datos$error.rel.li)
+```
+
+Al ser similar al absoluto, nuevamente se presenta sesgo, pero en este caso por la derecha, pues menores valores dan mayor error. Lo principal que se destaca de este gráfico es que permite visibilizar de mejor manera el error. Donde $n/\log(n)$ aproxima con un error porcentual generalmente menor a $0.1$, mientras que el de $\text{Li}(n)$ llega aproximar con errores porcentuales menores a $0.001$. De hecho, sus respectivos mínimos son de $0.024$ y de $0.0008$. El error medio respectivo es de $0.085$ y de $0.00275$, mientras que las medianas son $0.0825$ y de $0.00185$. Si bien el gráfico muestra una mayor inestabilidad de los datos para $\text{Li}$, esto es una ilusion producida por la escala logarítmica. Al comparar desviaciones estandares obtenemos $0.0046$ de $\text{Li}$ contra $0.0079$ de $n/\log(n)$, siendo la primera incluso menor.
+
+Finalmente, se compara el crecimiento asintótico de $|\pi(n)-\text{Li}(n)|$ con el de $\sqrt{x}\log(x)$.
+
+```{r}
+ggplot(datos, aes(x = n, y = error.abs.li/(sqrt(n)*log(n)))) +
+  geom_line(color = "steelblue", linewidth = 0.8) +
+  labs(
+    title = "Verificación empírica de la hipótesis de Riemann",
+    x = "n",
+    y = expression(
+      frac("|Li(n) - "*pi(n)*"|",
+           sqrt(n)*log(n))
+    )
+  ) +
+  theme_minimal()
+
+#min(datos$error.abs.li/(sqrt(datos$n)*log(datos$n)))
+#max(datos$error.abs.li/(sqrt(datos$n)*log(datos$n)))
+
+#sd(datos$error.abs.li/(sqrt(datos$n)*log(datos$n)))
+```
+
+Se puede apreciar que los valores rápidamente tienden a $0$. De hecho, el mínimo es $0.0046$, habiendo una desviación estandar de solo $0.0036$ entre todos los valores, donde el máximo es $0.349$. Es decir, los valores se mantienen relativamente cercanos y acotados, verificando la hipótesis.
+
 ## 5. Conclusiones
+
+- Se concluye que la integral logarítmica $\text{Li(n)}$ es una aproximación precisa para valores de $\pi(n)$, significativamente mejor que $\frac{n}{\log(n)}$. La muestra tomada refleja un comportamiento del error a decrecer a largo plazo, por lo cual $\text{Li}(n)$ podría aproximar a la función para casi todos los enteros sin error significativo.
+
+- También, se verifican empíricamente tanto el Teorema de los Números Primos como la hipótesis de Riemann, pues el error relativo de $\frac{n}{\log(n)}$ decrece, resultando en una aproximacion, si bien no tan buena como $\text{Li}(n)$, precisa a un nivel de $1$ decimal, por lo cual se puede esperar que a futuro la aproximación mejore. A su vez, se aprecia que $|\text{Li}(n)-\pi(n)|$ tiene un comportamiento de $O(\sqrt{x}\log(x))$ en el intervalo elegido, respaldando la hipótesis de Riemann.
 
 ## Referencias
 
