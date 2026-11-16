@@ -1,6 +1,8 @@
 ---
 format: 
   pdf:
+    maintfont: "Times New Roman"
+    fontsize: 12pt
     indent: true
     include-in-header:
       text: |
