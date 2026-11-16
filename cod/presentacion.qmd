@@ -1,0 +1,206 @@
+---
+title: "Aproximaciones a la función contadora de números primos"
+subtitle: "Proyecto individual - Herramientas de ciencia de datos I"
+author: "Sebastián Aguilar Pineda - C5C149"
+date: today
+lang: es
+format:
+  revealjs:
+    theme: moon
+    slide-number: c/t
+    transition: fade
+    background-transition: fade
+    center: false
+    width: 1280
+    height: 720
+    margin: 0.08
+    chalkboard: true
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(primes)
+library(pracma)
+
+f.pi <- read.csv("../data/datos.funcion.pi.csv")
+
+datos <- f.pi |> 
+  mutate(
+    aprox.log = n/ log(n),
+    aprox.li = expint_Ei(log(n)),
+    
+    error.abs.log = abs(pi_n - aprox.log),
+    error.abs.li = abs(pi_n - aprox.li),
+    
+    error.rel.log = error.abs.log / pi_n,
+    error.rel.li = error.abs.li / pi_n,
+    
+    razon.log = aprox.log / pi_n,
+    razon.li = aprox.li / pi_n
+  )
+```
+
+<!-- Diapositiva 1: portada (generada automáticamente con el YAML) -->
+
+## Contexto
+
+- Los números primos son difíciles de predecir
+- Se define $\pi(n)$ como la cantidad de primos menores o iguales a $n$.
+- ¿Existen aproximaciones para $\pi(n)$?
+
+
+## Quiz
+
+$\pi(n)$ "crece" como cierta función $f$. Esa función es:
+
+::: {.column width="45%"}
+a) $\log(n)$
+b) $\sqrt(n)$
+c) $\arctan(n)$
+d) $\frac{n}{\log(n)}$
+:::
+
+## 03 · Datos
+
+::::: columns
+::: {.column width="50%"}
+### Fuente
+
+- **Origen:** \[nombre de la fuente\]
+- **Período:** \[años\]
+- **Unidad de análisis:** \[unidad\]
+- **Observaciones:** \[n\]
+:::
+
+::: {.column width="50%"}
+### Variables
+
+| Variable | Descripción              |
+|:---------|:-------------------------|
+| X        | Variable explicativa     |
+| Y        | Variable respuesta       |
+| Grupo    | Categoría de comparación |
+:::
+:::::
+
+::: fuente
+Fuente: elaboración propia a partir de \[fuente original\].
+:::
+
+## 04 · Metodología
+
+::: steps
+**1. Preparación** → limpieza y revisión de valores faltantes
+
+**2. Exploración** → estadísticos descriptivos y visualizaciones
+
+**3. Análisis** → comparación e interpretación de resultados
+:::
+
+::: {.callout-tip appearance="simple"}
+Reemplaza estos pasos por los procedimientos efectivamente utilizados.
+:::
+
+## 05 · Visualización principal
+
+```{r}
+#| fig-width: 10
+#| fig-height: 4.7
+#| out-width: 95%
+```
+
+::: fuente
+Fuente: elaboración propia con el conjunto de ejemplo `mtcars` de R. Sustituye por tu gráfico.
+:::
+
+## 06 · Comparación por grupos
+
+::::: columns
+::: {.column width="65%"}
+```{r}
+#| fig-width: 8
+#| fig-height: 4.5
+```
+:::
+
+::: {.column width="35%"}
+### Interpretación
+
+- ¿Qué grupo presenta valores mayores?
+- ¿Qué tan dispersos son los datos?
+- ¿Existen valores atípicos?
+:::
+:::::
+
+::: fuente
+Fuente: elaboración propia con datos de ejemplo.
+:::
+
+## 07 · Tabla de resultados
+
+```{r}
+#| tbl-cap: "Resumen descriptivo por tipo de transmisión"
+
+```
+
+::: fuente
+Fuente: elaboración propia con datos de ejemplo. Reemplaza la tabla por tus resultados.
+:::
+
+## 08 · Hallazgos principales
+
+::::::::: columns
+:::: {.column width="33%"}
+::: metric
+### 01
+
+**Hallazgo uno**
+
+Describe el patrón más importante.
+:::
+::::
+
+:::: {.column width="33%"}
+::: metric
+### 02
+
+**Hallazgo dos**
+
+Resume una comparación relevante.
+:::
+::::
+
+:::: {.column width="33%"}
+::: metric
+### 03
+
+**Hallazgo tres**
+
+Explica una limitación o implicación.
+:::
+::::
+:::::::::
+
+## 09 · Conclusiones y referencias
+
+### Conclusiones
+
+- **Conclusión 1:** responde directamente a la pregunta de investigación.
+- **Conclusión 2:** conecta los resultados con el objetivo.
+- **Limitación:** indica qué no permiten afirmar los datos.
+
+### Referencias
+
+- Autor, A. (Año). *Título del recurso*. Editorial o URL.
+- Fuente de datos: \[enlace y fecha de consulta\].
+
+::: fuente
+Gracias por su atención.
+:::
+::::::::::::::::::::::::::::::
+:::::::::::::::::::::::::::::::
