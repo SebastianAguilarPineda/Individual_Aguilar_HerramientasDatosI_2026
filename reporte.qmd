@@ -9,7 +9,18 @@ format:
         \usepackage{indentfirst}
         \setlength{\parindent}{1.35cm}
 editor: visual
+echo: FALSE
 ---
+
+```{r}
+#| message: false
+#| warning: false
+
+library(tidyverse)
+library(primes)
+library(pracma)
+```
+
 
 Proyecto individual - Herramientas de ciencia de datos I
 
@@ -50,6 +61,10 @@ Finalmente, se realiza una comparación descriptiva de ambas aproximaciones para
 ## 4. Resultados
 
 ### 4.1 Analisis exploratorio de datos
+
+```{r}
+funcion.pi <- read.csv("data/datosfuncionpi.csv")
+```
 
 ### 4.2 Análisis de resultados
 
