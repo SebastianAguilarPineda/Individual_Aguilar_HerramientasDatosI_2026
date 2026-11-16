@@ -15,7 +15,7 @@ Sebastian Aguilar Pineda
 
 # Analisis estadístico de la distribución de los números primos
 
-## 1. Introducción.
+## 1. Introducción
 
 Los números primos tienen un comportamiento caótico en su distribución. Su comportamiento y observaciones casi aleatorio entre los números naturales permiten muchas aplicaciones en áreas como criptografía y ciberseguridad. Sin embargo, entre lo que conocemos sobre los números primos, se encuentra el popular teorema de los números primos, conjeturado inicialmente por Adrien-Marie Legendre y Karl Friedrich Gauss a finales del siglo XVIII y demostrado por Jacques Hadamard y Charles Jean de la Vallée Poussin, de forma independiente en 1896. El teorema establece que, si definimos la funcion $\pi:\mathbb N \to \mathbb N$, de modo que $\pi(n)$ indica la cantidad de números primos menores o iguales a $n$, entonces la sucesión $\{\pi(n)\}_{n\ge 1}$ se comporta asintóticamente como $\frac{n}{\log(n)}$, es decir:
 
@@ -27,13 +27,23 @@ Lo expuesto anteriormente permitirá verificar empíricamente la hipótesis del 
 
 ## 2. Objetivo
 
-Analizar mediante técnicas de estadística descriptiva y visualización de datos el comportamiento de las funciones $\pi(n)$, $n/\log(n)$ y $\text{Li}(n)$ en el conjunto de los enteros del $1$ al $1000000$, al igual que sus errores tanto absolutos como relativos, de manera que se permita verificar empíricamente tanto el teorema de los números primos, como la hipótesis de Riemann.
+Analizar mediante técnicas de estadística descriptiva y visualización de datos el comportamiento de las funciones $\pi(n)$, $n/\log(n)$ y $\text{Li}(n)$ en el conjunto de los enteros del $1$ al $1000000$, al igual que sus errores tanto absolutos como relativos, de manera que se permita evaluar la calidad de las aproximaciones y se verifiquen los teoremas expuestos.
 
 ## 3. Metodología
 
 ### 3.1. Obtención de datos
 
+Se utilizó el paquete de R `primes` para poder generar los primos del $2$ al $1000000$. Una vez hecho esto, se utiliza la función `findInterval(x, primos)`, donde `primos` es el vector de primos generados, y `x` es el vector de los enteros del $2$ al $1000000$, lo cual devuelve a cual intervalo (cerrado por la izquierda, abierto por la derecha) en `primes` pertenece cada valor de `x`. Es decir, dado que $23\le 25<29$ y $23$, entonces $25$ pertenece al $9$ intervalo entre los valores de `primos`, por lo cual se le asocia el valor $9$, justamente el valor de $\pi(5)$. De este modo, se genera cada valor de $\pi(n)$.
+
 ### 3.2. Aproximaciones
+
+La aproximación de $n/\log(n)$ se puede programar directo en R, por lo cual simplemente es necesario calcular la imagen para cada valor de $n$ de $2$ al $1000000$. Por otro lado, se utiliza el paquete `pracma` para obtener la funcion $\text{Li}(n)$. Estas aproximaciones serviran como modelos para estimar los valores de $\pi(n)$.
+
+### 3.3. Análisis de datos
+
+Para evaluar la precisión de las aproximaciones, se calculan los errores con signo, absolutos y relativos respecto a $\pi(n)$. Se emplean técnicas de estadística descriptiva, incluyendo medidas de tendencia central, dispersión y posición, como la media, mediana, desviación estándar y cuartiles. Estas medidas permiten caracterizar la magnitud y variabilidad de los errores de cada aproximación. Adicionalmente, se utilizan herramientas de visualización de datos, principalmente gráficos de líneas, histogramas y diagramas de caja, con el objetivo de identificar patrones en la distribución de los errores y analizar su evolución conforme aumenta el valor de $n$.
+
+Finalmente, se realiza una comparación descriptiva de ambas aproximaciones para identificar cuál presenta menores errores dentro del intervalo estudiado. El análisis se limita a los valores seleccionados y no pretende establecer conclusiones generales sobre la precisión de estas funciones para todos los enteros positivos.
 
 ## 4. Resultados
 
