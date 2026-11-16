@@ -1,19 +1,20 @@
 install.packages("primes")
 library(primes)
 library(dplyr)
-library(ggplot2)
 
-primos <- generate_primes(1, 1000000)
+# Generar primos
+primos <- generate_primes(2, 1000000)
 
-datos <- data.frame(
-  indice = seq_along(primos),
-  primo = primos
+# Puntos donde evaluaremos pi(x)
+n <- seq(2, 1000000, by = 1)
+
+# Función contadora
+pi_n <- findInterval(n, primos)
+
+df = data.frame(
+  n,
+  pi_n
 )
 
-datos <- datos |>
-  mutate(
-    brecha = lead(primo) - primo,
-    ultimo_digito = primo %% 10,
-    residuo_mod_6 = primo %% 6
-  )
+write.csv(df,"C:/Users/TianAguilarPineda/Downloads/datospiquefuncionpi.csv", row.names = FALSE)
 
