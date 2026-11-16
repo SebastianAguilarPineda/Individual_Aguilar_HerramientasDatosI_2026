@@ -77,7 +77,11 @@ Finalmente, se compara el crecimiento del error absoluto de $\text{Li}(n)$ con $
 El análisis exploratorio de datos se realizó sobre los datos de la imagen de la función $\pi$ en el dominio establecido. Se puede apreciar que hay un total de $999 999$ observaciones, todas siendo numéricas. La información descriptiva se aprecia a continuación.
 
 ```{r}
-f.pi <- read.csv("data/datosfuncionpi.csv")
+source("primos.R")
+
+generar.primos
+
+f.pi <- read.csv("../data/datosfuncionpi.csv")
 
 datos <- f.pi |> 
   mutate(
