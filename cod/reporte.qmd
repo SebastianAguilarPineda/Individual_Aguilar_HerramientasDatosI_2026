@@ -44,13 +44,13 @@ Los números primos tienen un comportamiento caótico en su distribución. Su co
 
 $$\lim_{n\to \infty} \frac{\pi(n)}{n/\log(n)} = 1$$
 
-Sin embargo, esto no quiere decir que $n/\log(n)$ explique la función $\pi$, sino que la razón de ambas funciones tiene a $1$, o equivalentemente, que el error relativo con el que $n/\log(n)$ aproxima a $\pi$ tiende a $0$. Por tanto, este proyecto busca analizar los datos correspondientes al error, tanto absoluto como relativo, que presentan diferentes aproximaciones de la función $\pi$, con el fin de determinar que tan buena aproximación es $n/\log(n)$ y compararla con la integral logaritmica $\text{Li}(n) := \int_0^n\frac{dt}{\log(t)}$, otra aproximación asintótica bien conocida de $\pi$(cita), particularmente, para conjuntos finitos de enteros, como los enteros del $1$ al $1000000$.
+Sin embargo, esto no quiere decir que $n/\log(n)$ explique la función $\pi$, sino que la razón de ambas funciones tiene a $1$, o equivalentemente, que el error relativo con el que $n/\log(n)$ aproxima a $\pi$ tiende a $0$. Por tanto, este proyecto busca analizar los datos correspondientes al error, tanto absoluto como relativo, que presentan diferentes aproximaciones de la función $\pi$, con el fin de determinar que tan buena aproximación es $n/\log(n)$ y compararla con la integral logaritmica $\text{Li}(n) := \int_0^n\frac{dt}{\log(t)}$, otra aproximación asintótica bien conocida de $\pi$(cita), particularmente, para conjuntos finitos de enteros, como los enteros del $2$ al $1000000$.
 
 Lo expuesto anteriormente permitirá verificar empíricamente la hipótesis del teorema de los números primos, al igual que determinar qué tan bien podemos aproximar la función $\pi$, con base en la información generada. Esto puede tener importancia para la teoría de números y para áreas relacionadas, ya que si bien no estudiamos a los números primos directamente, $\pi(n)$ incrementa su valor en $1$ de $\pi(n-1)$ si y solo si $n$ es primo. Es decir, $\pi$ representa un criterio de primalidad, algo poco común y valioso para los matemáticos. A su vez, ciertas hipótesis sobre que $\text{Li}(n)-\pi(n) = O(\sqrt{x}\log(x))$ son equivalentes a la hipótesis de Riemann, uno de los Problemas del Milenio del Clay Mathematics Institute, así justificando el estudio de estos errores (cita).
 
 ## 2. Objetivo
 
-Analizar mediante técnicas de estadística descriptiva y visualización de datos el comportamiento de las funciones $\pi(n)$, $n/\log(n)$ y $\text{Li}(n)$ en el conjunto de los enteros del $1$ al $1000000$, al igual que sus errores tanto absolutos como relativos, de manera que se permita evaluar la calidad de las aproximaciones y se verifiquen los teoremas expuestos.
+Analizar mediante técnicas de estadística descriptiva y visualización de datos el comportamiento de las funciones $\pi(n)$, $n/\log(n)$ y $\text{Li}(n)$ en el conjunto de los enteros del $2$ al $1000000$, al igual que sus errores tanto absolutos como relativos, de manera que se permita evaluar la calidad de las aproximaciones y se verifiquen los teoremas expuestos.
 
 ## 3. Metodología
 
@@ -79,9 +79,9 @@ El análisis exploratorio de datos se realizó sobre los datos de la imagen de l
 ```{r}
 source("primos.R")
 
-generar.primos
+generar.primos()
 
-f.pi <- read.csv("../data/datosfuncionpi.csv")
+f.pi <- read.csv("../data/datos.funcion.pi.csv")
 
 datos <- f.pi |> 
   mutate(
