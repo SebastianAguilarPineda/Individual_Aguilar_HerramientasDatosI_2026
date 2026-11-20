@@ -77,9 +77,11 @@ Finalmente, se compara el crecimiento del error absoluto de $\text{Li}(n)$ con $
 El análisis exploratorio de datos se realizó sobre los datos de la imagen de la función $\pi$ en el dominio establecido. Se puede apreciar que hay un total de $999 999$ observaciones, todas siendo numéricas. La información descriptiva se aprecia a continuación.
 
 ```{r}
-source("primos.R")
+#Este chunk genera los datos del proyecto. Se analizan las medidas de tendencia central de los valores de la funcion pi(n).
 
-generar.primos()
+source("generar.funcion.contadora.R")
+
+generar.contadora.primos(1000000)
 
 f.pi <- read.csv("../data/datos.funcion.pi.csv")
 
@@ -122,6 +124,7 @@ Se puede apreciar que la mediana es mayor a la media, por lo cual existe sesgo p
 Una vez analizados los valores que toma $\pi(n)$, consideramos tanto la aproximación por $n/\log(n)$, como por $\text{Li}(n)$. Gráficamente, se ven de la siguiente forma.
 
 ```{r}
+#Gráfico: compara la función pi con sus dos aproximaciones
 ggplot(datos, aes(x = n)) +
   geom_line(aes(y = pi_n, color = "π(n)"),
             linewidth = 1.1) +
@@ -321,10 +324,10 @@ Se puede apreciar que los valores rápidamente tienden a valores ceranos a $0$, 
 
 ## Referencias
 
-- Borchers, H. W. (2025). pracma: Practical numerical math functions (versión 2.4.6) [Software]. https://doi.org/10.32614/CRAN.package.pracma
+- Borchers, H. W. (2025). pracma: Practical numerical math functions (versión 2.4.6) \[Software\]. https://doi.org/10.32614/CRAN.package.pracma
 
-- Egeler, P., & Keyes, O. (2025). primes: Fast functions for prime numbers (versión 1.6.1) [Software]. https://doi.org/10.32614/CRAN.package.primes
+- Egeler, P., & Keyes, O. (2025). primes: Fast functions for prime numbers (versión 1.6.1) \[Software\]. https://doi.org/10.32614/CRAN.package.primes
 
-- Prime distribution [Visualización interactiva]. (s. f.). Cuuduongthancong. https://cuuduongthancong.com/app/galles/visualization/PrimeDistribution.html
+- Prime distribution \[Visualización interactiva\]. (s. f.). Cuuduongthancong. https://cuuduongthancong.com/app/galles/visualization/PrimeDistribution.html
 
 - PrimePages. (s. f.). How many primes? https://t5k.org/howmany.html
