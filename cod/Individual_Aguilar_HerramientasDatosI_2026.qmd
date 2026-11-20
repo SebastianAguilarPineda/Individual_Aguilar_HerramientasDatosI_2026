@@ -32,9 +32,9 @@ library(primes)
 library(pracma)
 ```
 
-### **Proyecto individual - Herramientas de ciencia de datos I**
+### **Universidad de Costa Rica - Herramientas de ciencia de datos I - II Semestre 2026**
 
-### **Sebastian Aguilar Pineda - C5C149**
+### **Proyecto individual - Sebastian Aguilar Pineda - C5C149**
 
 # Aproximaciones a la función contadora de números primos
 
@@ -314,13 +314,13 @@ ggplot(datos, aes(x = n, y = error.abs.li/(sqrt(n)*log(n)))) +
 #median(datos$error.abs.li/(sqrt(datos$n)*log(datos$n))) 
 ```
 
-Se puede apreciar que los valores rápidamente tienden a valores ceranos a $0$, siendo en particular un conjunto acotado. De hecho, el mínimo es $0.0046$, habiendo una desviación estandar de solo $0.0036$ entre todos los valores, donde el máximo es $0.349$. Es decir, los valores se mantienen relativamente cercanos y acotados, verificando la hipótesis. También, la media es de $0.0091$, donde generalmente los datos a la izquierda son mayores y los de la derecha menores.
+Se puede apreciar que los valores tienden a valores ceranos a $0$. De hecho, el mínimo es $0.0046$, habiendo una desviación estandar de $0.0036$ entre todos los valores, donde el máximo es $0.349$. Es decir, si bien están acotados, los valores pueden variar sustancialmente, sin contradecir la hipótesis, pero sin evidencia definitiva para confirmarla. También, la media es de $0.0091$, donde generalmente los datos a la izquierda son mayores y los de la derecha menores.
 
 ## 5. Conclusiones
 
 - Se concluye que la integral logarítmica $\text{Li(n)}$ es una aproximación precisa para valores de $\pi(n)$, significativamente mejor que $\frac{n}{\log(n)}$. La muestra tomada refleja un comportamiento del error a decrecer a largo plazo, por lo cual $\text{Li}(n)$ podría aproximar a la función para casi todos los enteros sin error significativo.
 
-- También, se verifica empíricamente el Teorema de los Números Primos, pues el error relativo de $\frac{n}{\log(n)}$ decrece, resultando en una aproximacion, si bien no tan buena como $\text{Li}(n)$, precisa a un nivel de $1$ decimal. A su vez, se aprecia que $|\text{Li}(n)-\pi(n)|$ tiene un comportamiento de $O(\sqrt{x}\log(x))$ en el intervalo elegido, respaldando la hipótesis de Riemann, aunque puede ser que no se cumple para valores más grandes.
+- También, se verifica empíricamente el Teorema de los Números Primos, pues el error relativo de $\frac{n}{\log(n)}$ decrece, resultando en una aproximacion, si bien no tan buena como $\text{Li}(n)$, precisa a un nivel de $1$ decimal. A su vez, se aprecia que $|\text{Li}(n)-\pi(n)|$ tiene un comportamiento de $O(\sqrt{x}\log(x))$ en el intervalo elegido, respaldando la hipótesis de Riemann, aunque puede ser que no se cumpla para valores más grandes.
 
 ## Referencias
 
